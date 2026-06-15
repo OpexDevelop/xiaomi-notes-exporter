@@ -49,7 +49,12 @@ const dict = {
     }
 };
 
-let currentLang = localStorage.getItem('lang') || 'ru';
+const browserLang = navigator.language || navigator.userLanguage;
+
+const defaultLang = (browserLang && browserLang.startsWith('ru')) ? 'ru' : 'en';
+
+let currentLang = localStorage.getItem('lang') || defaultLang;
+
 const langToggle = document.getElementById('langToggle');
 
 function applyLang(lang) {
