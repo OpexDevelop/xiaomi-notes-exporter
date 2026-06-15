@@ -1,4 +1,4 @@
-const CACHE_NAME = 'notes-exporter-v1';
+const CACHE_NAME = 'notes-exporter-v3';
 const ASSETS = [
     './',
     './index.html',
