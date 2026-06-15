@@ -1,0 +1,130 @@
+:root {
+    --primary: #000000;
+    --secondary: #1a1a1a;
+    --text: #f0f0f0;
+    --highlight: #38bdf8;
+    --glass: rgba(120, 120, 120, 0.09);
+    --glass-border: rgba(11, 12, 37, .9);
+    --error-color: #f87171;
+    --success-color: #50fa7b;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--primary);
+    color: var(--text);
+    min-height: 100vh;
+    background-image:
+        radial-gradient(circle at 25% 25%, rgba(56, 189, 248, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(244, 114, 182, 0.15) 0%, transparent 50%);
+    background-attachment: fixed;
+    display: flex;
+    flex-direction: column;
+}
+
+.frosted-glass {
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.frosted-glass-inner {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+}
+
+main { 
+    padding: 2rem 1rem; /* Убрали отступ под шапку */
+    max-width: 800px; 
+    margin: 0 auto; 
+    flex: 1; 
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Центрируем по вертикали на больших экранах */
+}
+
+.main-panel { padding: 2rem; }
+
+/* Новый блок для заголовка и кнопки языка */
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+    gap: 1rem;
+}
+
+.panel-header h1 { 
+    font-weight: 500; 
+    font-size: 1.6rem; 
+    margin: 0; 
+    color: var(--text); 
+    line-height: 1.2;
+}
+
+.instruction { padding: 15px; margin-bottom: 20px; font-size: 0.9rem; border-left: 4px solid var(--highlight); line-height: 1.6; }
+
+/* Исправление вылезающего текста на мобилках */
+.instruction code { 
+    background: var(--primary); 
+    padding: 6px 10px; 
+    border-radius: 4px; 
+    color: var(--highlight); 
+    font-family: monospace;
+    display: block; /* Делаем блоком, чтобы был на новой строке */
+    margin-top: 10px;
+    word-break: break-all; /* Жесткий перенос слов, чтобы не вылезало за края */
+}
+
+.drop-zone {
+    border: 2px dashed var(--glass-border); padding: 40px 20px; text-align: center;
+    cursor: pointer; transition: all 0.3s ease; margin-bottom: 20px;
+}
+.drop-zone.dragover { border-color: var(--highlight); background: rgba(56, 189, 248, 0.1); }
+.drop-zone p { margin: 0; font-weight: 500; font-size: 1.1rem; }
+.drop-zone span { display: block; font-size: 0.85rem; margin-top: 8px; opacity: 0.6; }
+input[type="file"] { display: none; }
+
+.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+@media (max-width: 600px) { 
+    .settings-grid { grid-template-columns: 1fr; } 
+    .main-panel { padding: 1.5rem; }
+}
+
+.checkbox-group { padding: 15px; }
+.checkbox-group h3 { margin: 0 0 12px 0; font-size: 1rem; font-weight: 500; color: var(--highlight); }
+.checkbox-label { display: flex; align-items: center; font-size: 0.9rem; margin-bottom: 10px; cursor: pointer; opacity: 0.9;}
+.checkbox-label:hover { opacity: 1; }
+.checkbox-label input { margin-right: 10px; width: 16px; height: 16px; accent-color: var(--highlight); }
+.sub-options { margin-left: 26px; display: flex; flex-wrap: wrap; gap: 10px; }
+
+.btn {
+    display: flex; justify-content: center; align-items: center; gap: 0.5rem;
+    width: 100%; padding: 1rem; background: var(--glass); border: 1px solid var(--glass-border);
+    border-radius: 8px; color: var(--text); font-weight: 500; font-size: 1.1rem;
+    cursor: pointer; transition: all 0.3s ease; font-family: inherit;
+}
+.btn:hover { background: rgba(56, 189, 248, 0.2); border-color: var(--highlight); transform: translateY(-2px); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.btn-small {
+    background: var(--glass); border: 1px solid var(--glass-border); color: var(--text);
+    padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; font-family: inherit;
+    flex-shrink: 0; /* Чтобы кнопка не сжималась, если заголовок длинный */
+}
+.btn-small:hover { border-color: var(--highlight); color: var(--highlight); }
+
+#log { margin-top: 20px; padding: 15px; height: 200px; overflow-y: auto; font-family: monospace; font-size: 13px; white-space: pre-wrap; }
+.log-info { color: var(--text); opacity: 0.8;}
+.log-success { color: var(--success-color); }
+.log-error { color: var(--error-color); }
+.log-warn { color: #f1fa8c; }
+
+footer { text-align: center; padding: 2rem 1rem; opacity: 0.6; font-size: 0.9rem; border-top: 1px solid var(--glass-border); }

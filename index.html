@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title data-i18n="pageTitle">Xiaomi Notes Exporter</title>
+    <meta name="description" content="Convert MIUI Notes backups (.bak) to Obsidian Markdown and JSON.">
+    <meta name="theme-color" content="#000000">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=fallback" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- JSZip -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <main>
+        <section class="frosted-glass main-panel">
+            
+            <!-- Заголовок и кнопка языка теперь здесь -->
+            <div class="panel-header">
+                <h1 data-i18n="mainTitle">Xiaomi Notes Exporter</h1>
+                <button id="langToggle" class="btn-small">EN</button>
+            </div>
+            
+            <div class="instruction frosted-glass-inner">
+                <strong data-i18n="instrTitle">Где взять файл бэкапа?</strong><br>
+                <span data-i18n="instr1">1. Настройки ➔ О телефоне ➔ Резервирование и восстановление ➔ Мобильное устройство.</span><br>
+                <span data-i18n="instr2">2. Выберите только <strong>Заметки</strong> в системных приложениях.</span><br>
+                <span data-i18n="instr3">3. Файл появится по пути:</span>
+                <!-- Тег code теперь будет переноситься на новые строки -->
+                <code>MIUI/backup/AllBackup/date_time/Notes(com.miui.notes).bak</code>
+            </div>
+
+            <div class="drop-zone frosted-glass-inner" id="dropZone">
+                <i class="fas fa-cloud-upload-alt fa-3x" style="color: var(--highlight); margin-bottom: 15px;"></i>
+                <p id="dropText" data-i18n="dropText">Перетащите файл .bak сюда или нажмите для выбора</p>
+                <span data-i18n="dropSub">Поддерживаются только файлы резервных копий Xiaomi Notes</span>
+                <input type="file" id="fileInput" accept=".bak">
+            </div>
+
+            <div class="settings-grid">
+                <div class="checkbox-group frosted-glass-inner">
+                    <h3 data-i18n="formatTitle">Форматы экспорта</h3>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="optMarkdown" checked>
+                        <span data-i18n="optMd">Markdown (Obsidian Vault)</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="optJson" checked>
+                        <span data-i18n="optJson">База данных в JSON</span>
+                    </label>
+                    <label class="checkbox-label" style="margin-top: 10px;">
+                        <input type="checkbox" id="optSkipEmpty" checked>
+                        <span data-i18n="optSkip">Пропускать пустые заметки</span>
+                    </label>
+                </div>
+
+                <div class="checkbox-group frosted-glass-inner">
+                    <h3 data-i18n="propsTitle">Свойства (YAML Frontmatter)</h3>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="optFrontmatter" checked>
+                        <span data-i18n="optFm">Добавлять свойства в .md</span>
+                    </label>
+                    <div class="sub-options" id="frontmatterOptions">
+                        <label class="checkbox-label"><input type="checkbox" id="fmId" checked> id</label>
+                        <label class="checkbox-label"><input type="checkbox" id="fmCreated" checked> created</label>
+                        <label class="checkbox-label"><input type="checkbox" id="fmUpdated" checked> updated</label>
+                        <label class="checkbox-label"><input type="checkbox" id="fmPinned" checked> pinned</label>
+                    </div>
+                </div>
+            </div>
+
+            <button id="btnStart" class="btn"><i class="fas fa-play"></i> <span data-i18n="btnStart">Начать конвертацию</span></button>
+
+            <div id="log" class="frosted-glass-inner"></div>
+        </section>
+    </main>
+
+    <footer>
+        &copy; <span id="currentYear"></span> Xiaomi Notes Exporter. <span data-i18n="footerText">Работает локально в браузере.</span>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
