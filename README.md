@@ -4,6 +4,9 @@ Python tool for exporting notes from Xiaomi Notes to Markdown (Obsidian) and JSO
 
 It can extract normal notes, attachments, lists, formatting, mind maps, note metadata (folders, creation/modification time, pinned status), etc.
 
+Web Version available:
+https://opexdevelop.github.io/xiaomi-notes-exporter/
+
 ### Where to get the backup file?
 1. Settings ➔ About phone ➔ Back up and restore ➔ Mobile device.
 2. Select only Notes in Other system app data.

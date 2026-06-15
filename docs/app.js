@@ -1,4 +1,3 @@
-// --- Регистрация Service Worker для PWA ---
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('sw.js').catch(err => console.log('SW Reg failed:', err));
@@ -7,39 +6,44 @@ if ('serviceWorker' in navigator) {
 
 document.getElementById('currentYear').textContent = new Date().getFullYear();
 
-// --- Локализация (i18n) ---
 const dict = {
     ru: {
-        pageTitle: "Xiaomi Notes Exporter", logo: "Notes Exporter", mainTitle: "Xiaomi Notes Exporter",
+        pageTitle: "Xiaomi Notes Exporter", mainTitle: "Xiaomi Notes Exporter",
         instrTitle: "Где взять файл бэкапа?",
         instr1: "1. Настройки ➔ О телефоне ➔ Резервирование и восстановление ➔ Мобильное устройство.",
         instr2: "2. Выберите только <strong>Заметки</strong> в системных приложениях.",
         instr3: "3. Файл появится по пути:",
         dropText: "Перетащите файл .bak сюда или нажмите для выбора",
-        dropSub: "Поддерживаются только файлы резервных копий Xiaomi Notes",
         formatTitle: "Форматы экспорта", optMd: "Markdown (Obsidian Vault)", optJson: "База данных в JSON", optSkip: "Пропускать пустые заметки",
         propsTitle: "Свойства (YAML Frontmatter)", optFm: "Добавлять свойства в .md",
-        btnStart: "Начать конвертацию", footerText: "Работает локально в браузере.",
+        btnStart: "Начать конвертацию",
+        infoLocal: "Все данные обрабатываются <b>локально</b> на вашем устройстве. Файлы никуда не отправляются.",
+        infoPwa: "Сайт можно установить как <b>веб-приложение (PWA)</b> через меню браузера.",
+        infoCli: "Для автоматизации доступна <a href='https://github.com/OpexDevelop/xiaomi-notes-exporter' target='_blank'>CLI-версия на GitHub</a>.",
         logRead: "Чтение файла...", logTar: "Извлечение TAR архива (это может занять время)...",
         logTarDone: "Извлечено файлов из TAR: ", logDb: "Парсинг базы данных...",
         logFound: "Найдено: ", logZip: "Формирование ZIP архива...", logDone: "Успешно завершено! Загрузка началась.",
+        starRepo: "🎉 Готово! Если этот инструмент вам помог, пожалуйста, <a href='https://github.com/OpexDevelop/xiaomi-notes-exporter' target='_blank'>поставьте ⭐️ на GitHub</a>!",
         errNoFile: "Пожалуйста, выберите файл .bak", errFormat: "Выберите хотя бы один формат для экспорта!",
         errMagic: "Неверный формат бэкапа (не найдена сигнатура none\\n).", errDb: "Файл базы данных _tmp_bak не найден в архиве."
     },
     en: {
-        pageTitle: "Xiaomi Notes Exporter", logo: "Notes Exporter", mainTitle: "Xiaomi Notes Exporter",
+        pageTitle: "Xiaomi Notes Exporter", mainTitle: "Xiaomi Notes Exporter",
         instrTitle: "Where to get the backup file?",
         instr1: "1. Settings ➔ About phone ➔ Back up and restore ➔ Mobile device.",
         instr2: "2. Select only <strong>Notes</strong> under Other system app data.",
         instr3: "3. The file will be saved at:",
         dropText: "Drop .bak file here or click to select",
-        dropSub: "Only Xiaomi Notes backup files are supported",
         formatTitle: "Export Formats", optMd: "Markdown (Obsidian Vault)", optJson: "JSON Database", optSkip: "Skip empty notes",
         propsTitle: "Properties (YAML Frontmatter)", optFm: "Add properties to .md",
-        btnStart: "Start Conversion", footerText: "Runs locally in your browser.",
+        btnStart: "Start Conversion",
+        infoLocal: "All data is processed <b>locally</b> on your device. No files are uploaded.",
+        infoPwa: "You can install this site as a <b>Web App (PWA)</b> via your browser menu.",
+        infoCli: "For automation, a <a href='https://github.com/OpexDevelop/xiaomi-notes-exporter' target='_blank'>CLI version is available on GitHub</a>.",
         logRead: "Reading file...", logTar: "Extracting TAR archive (this may take a while)...",
         logTarDone: "Files extracted from TAR: ", logDb: "Parsing database...",
         logFound: "Found: ", logZip: "Generating ZIP archive...", logDone: "Successfully completed! Download started.",
+        starRepo: "🎉 Done! If this tool helped you, please <a href='https://github.com/OpexDevelop/xiaomi-notes-exporter' target='_blank'>star the repo on GitHub ⭐️</a>!",
         errNoFile: "Please select a .bak file", errFormat: "Select at least one export format!",
         errMagic: "Invalid backup format (none\\n signature not found).", errDb: "Database file _tmp_bak not found in archive."
     }
@@ -62,7 +66,6 @@ applyLang(currentLang);
 
 function t(key) { return dict[currentLang][key] || key; }
 
-// --- UI Logic ---
 const logEl = document.getElementById('log');
 const btnStart = document.getElementById('btnStart');
 const fileInput = document.getElementById('fileInput');
@@ -92,18 +95,16 @@ function updateFileName() {
     }
 }
 
+// Изменено: теперь поддерживает HTML теги (innerHTML вместо textContent)
 function log(msg, type = 'info') {
-    const span = document.createElement('span');
+    const span = document.createElement('div');
     span.className = `log-${type}`;
-    span.textContent = msg + '\n';
+    span.innerHTML = msg;
     logEl.appendChild(span);
     logEl.scrollTop = logEl.scrollHeight;
 }
 
 const yieldToMain = () => new Promise(resolve => setTimeout(resolve, 0));
-
-// --- Core Logic (Parsing & Exporting) ---
-// (Здесь полностью сохранены функции из предыдущего ответа: safeDecode, sanitizeFilename, formatTime, guessExtension, readVarint, parseProto, parseTar, processFolder, processNote, isNoteEmpty, getNoteTitle, toObsidian)
 
 function safeDecode(bytes) {
     if (!bytes) return "";
@@ -247,7 +248,6 @@ function toObsidian(htmlText, mediaMap) {
     return text.replace(/<b>(.*?)<\/b>/gs, '**$1**').replace(/<i>(.*?)<\/i>/gs, '*$1*');
 }
 
-// --- Main Execution ---
 btnStart.addEventListener('click', async () => {
     if (!fileInput.files.length) return log(t('errNoFile'), "error");
     const optMarkdown = document.getElementById('optMarkdown').checked, optJson = document.getElementById('optJson').checked, optSkipEmpty = document.getElementById('optSkipEmpty').checked;
@@ -355,7 +355,12 @@ btnStart.addEventListener('click', async () => {
             }
         }
 
-        log(t('logDone'), "success"); await yieldToMain();
+        log(t('logDone'), "success"); 
+        
+        // Добавлено сообщение с просьбой поставить звездочку
+        log(t('starRepo'), "success");
+        
+        await yieldToMain();
         const content = await zip.generateAsync({ type: "blob" });
         const link = document.createElement('a'); link.href = URL.createObjectURL(content); link.download = "Xiaomi_Notes_Export.zip"; link.click();
 
